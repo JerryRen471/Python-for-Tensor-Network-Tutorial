@@ -11,7 +11,9 @@ def full_tensor(tensors):
 
 
 def mps_norm_square(tensors, normalize=False, form='log'):
-    # norm = <psi|psi>
+    '''
+    norm = <psi|psi>
+    '''
     v = tc.eye(tensors[0].shape[0], dtype=tensors[0].dtype, device=tensors[0].device)
     norm_list = list()
     for n in range(len(tensors)):
