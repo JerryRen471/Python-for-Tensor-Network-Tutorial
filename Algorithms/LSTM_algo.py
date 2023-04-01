@@ -1,5 +1,8 @@
+import sys
+sys.path.insert(0, sys.path[0]+"/../")
+
 import torch as tc
-import Library.BasicFun as bf
+from Library import BasicFun as bf
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn, optim
 from Library.DataFun import split_time_series
@@ -51,6 +54,7 @@ def LSTM_predict_time_series(data, para=None):
 
     loss_train_rec = list()
     loss_test_rec = list()
+    ckps = list()
     for t in range(para['it_time']):
         net.train()
         loss_tmp = 0.0
@@ -85,3 +89,20 @@ def LSTM_predict_time_series(data, para=None):
         results['test_loss'] = loss_test_rec
     return net, results, para
 
+
+if __name__ == '__main__':
+    file = open('D:\\Manual\\Code\\tests\\data.txt', mode='r')
+    lines = file.readlines()
+    file.close()
+    for _ in range(len(lines)):
+        lines[_] = float(lines[_][:-1])
+    data = tc.tensor(lines)
+    print(data.shape)
+    net, results, para = LSTM_predict_time_series(data)
+
+    import numpy as np
+    np.savetxt('D:\\Manual\\Code\\tests\\LSTMdata\\train_pre.txt', results['train_pred'])
+    np.savetxt('D:\\Manual\\Code\\tests\\LSTMdata\\test_pre.txt', results['test_pred'])
+
+    from matplotlib import pyplot as plt
+    plt.plot(tc.tensor([_ for _ in range(data.shape[0])]), data)
